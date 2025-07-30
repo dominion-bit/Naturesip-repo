@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <title>Ngozi's Natursip - Natural Juice</title>
+  <style>
+    .particle {
+  position: fixed;
+  pointer-events: none;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #FFA500, #FF7F00);
+  border-radius: 50%;
+  opacity: 1;
+  animation: particleMove 800ms forwards;
+  will-change: transform, opacity;
+  z-index: 9999;
+}
+
+@keyframes particleMove {
+  to {
+    transform: translate(var(--x), var(--y)) scale(0);
+    opacity: 0;
+  }
+}
+    /* Background video styling */
+    .video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow */
+    }
+    
+    .video-container video {
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    
+    /* Scroll animation classes */
+    .fade-in-element {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    
+    .fade-in-element.appear {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Staggered animation delay */
+    .delay-100 { transition-delay: 0.1s; }
+    .delay-200 { transition-delay: 0.2s; }
+    .delay-300 { transition-delay: 0.3s; }
+    .delay-400 { transition-delay: 0.4s; }
+    .delay-500 { transition-delay: 0.5s; }
+    
+    /* Hover effects */
+    .hover-grow {
+      transition: transform 0.3s ease;
+    }
+    
+    .hover-grow:hover {
+      transform: scale(1.03);
+    }
+    
+    .hover-shadow:hover {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .hover-bright:hover {
+      filter: brightness(1.1);
+    }
+    
+    .hover-border:hover {
+      box-shadow: 0 0 0 2px rgba(237, 137, 54, 0.5);
+    }
+    
+    .bg-image-section {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    /* Navbar scroll behavior */
+    .navbar {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds shadow to the text container */
+    }
+    
+    .navbar-hidden {
+      transform: translateY(-100%);
+    }
+    
+    /* Add padding to body to account for fixed navbar */
+    body {
+      padding-top: 72px; /* Adjust based on your navbar height */
+    }
+    
+    /* Menu image styling */
+    .menu-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+    
+    .juice-card {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      border-radius: 0.5rem;
+    }
+    
+    .juice-card-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    
+    .juice-card:hover .juice-card-content {
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    #backToTopBtn {
+  background: linear-gradient(270deg, #FFA500, #FF7F50, #FFA500);
+  background-size: 600% 600%;
+  animation: gradientShift 8s ease infinite;
+  animation: pulse 2s infinite;
+}
+#backToTopBtn:hover i {
+  transform: rotate(360deg);
+  transition: transform 0.5s ease;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,165,0, 0.7); }
+  50% { box-shadow: 0 0 20px rgba(255,165,0, 1); }
+}
+  </style>
+</head>
+<body id="top" class="bg-orange-100 text-gray-800">
+ <!-- Navbar -->
+<div class="navbar bg-orange-400 text-white">
+  <div class="flex justify-between items-center p-3 max-w-7xl mx-auto w-full">
+    <!-- Logo -->
+    <div class="logo flex items-center gap-2">
+      <!-- <img src="./assets/naturesip logo.png" alt="Ngozi's Naturesip" class="w-12 h-12 object-contain"> -->
+      <h1 class="text-2xl font-bold">Ngozi's Naturesip</h1>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="menu hidden lg:flex gap-4 font-bold
+    ">
+      <a href="#" class="text-lg hover:underline hover-grow flex items-center gap-1">
+       Home
+      </a>
+      <a href="#about" class="text-lg hover:underline hover-grow flex items-center gap-1">
+       About
+      </a>
+      <a href="#mission" class="text-lg hover:underline hover-grow flex items-center gap-1">
+       Mission
+      </a>
+      <a href="#process" class="text-lg hover:underline hover-grow flex items-center gap-1">
+       Process
+      </a>
+      <a href="#products" class="text-lg hover:underline hover-grow flex items-center gap-1">
+       Products
+      </a>
+      <a href="#contact" class="text-lg hover:underline hover-grow flex items-center gap-1">
+       Contact
+      </a>
+    </div>
+
+    <!-- Mobile Burger -->
+    <button class="lg:hidden text-2xl" id="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div id="mobile-menu" class="flex-col lg:hidden hidden px-6 pb-4 gap-3">
+    <a href="#" class="text-lg hover:underline hover-grow flex items-center gap-1">
+      <i class="fas fa-home"></i> Home
+    </a>
+    <a href="#about" class="text-lg hover:underline hover-grow flex items-center gap-1">
+      <i class="fas fa-seedling"></i> About
+    </a>
+    <a href="#mission" class="text-lg hover:underline hover-grow flex items-center gap-1">
+      <i class="fas fa-heart"></i> Mission
+    </a>
+    <a href="#process" class="text-lg hover:underline hover-grow flex items-center gap-1">
+      <i class="fas fa-lemon"></i> Process
+    </a>
+    <a href="#products" class="text-lg hover:underline hover-grow flex items-center gap-1">
+      <i class="fas fa-apple-alt"></i> Products
+    </a>
+    <a href="#contact" class="text-lg hover:underline hover-grow flex items-center gap-1">
+      <i class="fas fa-comment-dots"></i> Contact
+    </a>
+  </div>
+</div>
+    <!-- Hero Banner with background video -->
+    <div class="relative h-[700px] w-full overflow-hidden">
+      <!-- Background video -->
+      <div class="video-container">
+        <video autoplay muted loop>
+          <source src="./assets/vid.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      
+      <!-- Dark overlay for better text contrast -->
+      <div class="absolute inset-0 bg-black-100 bg-opacity-10"></div>
+      
+      <!-- Centered content container -->
+      <div class="relative h-full flex flex-col items-center justify-center text-center text-white px-4">
+          <h1 class="text-4xl md:text-6xl font-bold mb-4 fade-in-element">Ngozi's Natursip</h1>
+          <p class="text-xl md:text-2xl max-w-2xl mb-8 fade-in-element delay-200">Sip on the goodness of nature.</p>
+          <button class="relative overflow-hidden bg-orange-500 text-white font-bold py-3 px-6 rounded-full text-lg transition duration-300 hover-grow hover-shadow fade-in-element delay-300">
+            <span class="relative z-10">Order Now</span>
+            <!-- Juicy fill sliding UP -->
+            <span class="absolute inset-0 bg-gradient-to-t from-yellow-400 via-orange-400 to-red-500 transform translate-y-full transition-transform duration-500 ease-in-out rounded-full pointer-events-none hover:translate-y-0"></span>
+          </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- About Section with background image -->
+    <section id="about" class="bg-image-section py-16 relative shadow-xl/30 ">
+      <div class="absolute inset-0 bg-orange-400 bg-opacity-90"></div>
+      <div class="container mx-auto flex flex-col md:flex-row items-center justify-between p-5 gap-8 relative z-10">
+        <div class="md:w-1/2">
+          <h2 class="text-4xl text-center md:text-left p-5 font-bold text-white fade-in-element">About Us</h2>
+          <p class="text-xl text-white leading-relaxed fade-in-element delay-100">
+            Welcome to <strong>Ngozi's Natursip,</strong> where we embrace the goodness of nature in every bottle. Inspired by the rich traditions of past generations, we believe that natural fruits, herbs, and plant-based drinks are the key to a healthy life—just as our ancestors enjoyed in the good old days.
+          </p>
+          <p class="text-xl text-white leading-relaxed mt-4 fade-in-element delay-200">
+            Our passion is simple: to provide pure, organic, and fresh fruit juices with no preservatives or artificial additives. We are here to bring nature's best to your cup, offering wholesome drinks that nourish your body and refresh your spirit. Whether you're an adult seeking wellness or a child enjoying a refreshing sip, Ngozi's Natursip is for everyone.
+          </p>
+          <p class="text-xl text-white leading-relaxed mt-4 fade-in-element delay-300">
+            With each bottle, we invite you to experience the joy of sipping on the goodness of nature.
+          </p>
+        </div>
+        <div class="md:w-1/2 flex justify-center ">
+          <img src="./assets/family.jpg" alt="Fresh Juice" class="rounded-lg shadow-xl/30  max-w-full h-auto hover-grow hover-shadow fade-in-element delay-200" style="max-height: 400px;">
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission Section with background -->
+    <section id="mission" class="inset-shadow-xl  py-16 relative overflow-hidden" style="background: linear-gradient(135deg, #fff8e1 0%, #fffde7 100%);">
+      <div class="container mx-auto px-5 relative z-10">
+        <h2 class="text-4xl text-center font-bold mb-12 text-orange-500 fade-in-element">Our Mission</h2>
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <div class="md:w-1/2 relative fade-in-element">
+            <div class="bg-image-section rounded-lg shadow-lg w-full h-80 hover-grow hover-shadow" style="background-image: url('./assets/family_2.jpg')"></div>
+          </div>
+          <div class="md:w-1/2">
+            <p class="text-xl mb-6 fade-in-element delay-100">
+              At Ngozi's Natursip, our mission is to inspire a healthy lifestyle through fresh, natural beverages made from the finest ingredients. We are committed to:
+            </p>
+            <ul class="space-y-4">
+              <li class="flex items-start fade-in-element delay-200">
+                <svg class="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Providing 100% natural, preservative-free juices that promote well-being.</span>
+              </li>
+              <li class="flex items-start fade-in-element delay-300">
+                <svg class="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Sourcing fresh, high-quality fruits to ensure maximum nutrition in every sip.</span>
+              </li>
+              <li class="flex items-start fade-in-element delay-400">
+                <svg class="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Making healthy living accessible to everyone, from children to adults.</span>
+              </li>
+              <li class="flex items-start fade-in-element delay-500">
+                <svg class="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Encouraging a return to nature's simple, pure, and wholesome nourishment.</span>
+              </li>
+            </ul>
+            <p class="text-xl mt-6 fade-in-element delay-500">
+              Seeing people live healthier lives brings us joy, and we are dedicated to being a part of your wellness journey, one sip at a time.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process Section with background image -->
+    <section id="process" class="py-16 bg-image-section relative">
+      <div class="absolute inset-0 bg-orange-100 bg-opacity-95"></div>
+      <div class="container mx-auto px-5 relative z-10">
+        <h2 class="text-4xl text-center font-bold mb-12 text-orange-500 fade-in-element">Our Process: From Nature to Your Sip</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Step 1 -->
+          <div class="bg-white p-8 rounded-lg shadow-lg relative overflow-hidden hover-grow hover-shadow fade-in-element">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-image-section rounded-bl-full" style="background-image: url('./assets/orange_pineapple.jpeg')"></div>
+            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">1</div>
+            <h3 class="text-2xl font-bold mb-4 text-orange-500">Honestly Sourced</h3>
+            <p class="text-lg">
+              We believe that the best juices start with the best ingredients. That's why we source our fruits from trusted local farmers and markets, ensuring freshness while supporting our community. When certain ingredients aren't available locally, we carefully select ethical and sustainable suppliers to maintain the highest quality.
+            </p>
+          </div>
+          
+          <!-- Step 2 -->
+          <div class="bg-white p-8 rounded-lg shadow-lg relative overflow-hidden hover-grow hover-shadow fade-in-element delay-100">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-image-section rounded-bl-full" style="background-image: url('./assets/orange_juice.jpeg')"></div>
+            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">2</div>
+            <h3 class="text-2xl font-bold mb-4 text-orange-500">Squeezed Fresh, Never Compromised</h3>
+            <p class="text-lg">
+              Our juices are made in small batches to preserve their natural taste and nutrients. We use minimal processing to retain the freshness, vibrant color, and rich flavor of each fruit—just as nature intended.
+            </p>
+          </div>
+          
+          <!-- Step 3 -->
+          <div class="bg-white p-8 rounded-lg shadow-lg relative overflow-hidden hover-grow hover-shadow fade-in-element delay-200">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-image-section rounded-bl-full" style="background-image: url('./assets/pineapple.jpeg')"></div>
+            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">3</div>
+            <h3 class="text-2xl font-bold mb-4 text-orange-500">Pure & Clean Label</h3>
+            <p class="text-lg">
+              We stand for transparency. Our juices contain only real ingredients—no preservatives, no artificial sweeteners, and no GMOs. Every bottle is packed with pure fruit goodness, because what you see on the label is exactly what you get.
+            </p>
+          </div>
+          
+          <!-- Step 4 -->
+          <div class="bg-white p-8 rounded-lg shadow-lg relative overflow-hidden hover-grow hover-shadow fade-in-element delay-300">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-image-section rounded-bl-full" style="background-image: url('./assets/watermelon.jpeg')"></div>
+            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">4</div>
+            <h3 class="text-2xl font-bold mb-4 text-orange-500">Environmentally Thoughtful</h3>
+            <p class="text-lg">
+              We care about the environment just as much as we care about your health. Our production methods prioritize sustainability, minimal waste, and eco-conscious packaging, ensuring that we contribute to a greener planet while delivering high-quality, natural juices.
+            </p>
+          </div>
+        </div>
+        
+        <div class="text-center mt-12 fade-in-element delay-400">
+          <p class="text-xl italic">
+            At Ngozi's Natursip, we believe that nature's best should be enjoyed fresh, pure, and guilt-free. Drink natural, live healthy.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product List Section with background image -->
+    <section class="py-16 relative overflow-hidden">
+      <div class="absolute inset-0 bg-image-section" style="background-image: url('./assets/woman.jpeg'); opacity: 0.1;"></div>
+      <div class="container mx-auto px-5 relative z-10">
+        <h2 class="text-4xl text-center font-bold mb-12 text-orange-500 fade-in-element">Our Juice Menu</h2>
+        
+        <div class="bg-orange-50 p-8 rounded-lg shadow-lg hover-shadow">
+          <div class="mb-10">
+            <h3 class="text-2xl font-bold mb-6 text-orange-500 border-b-2 border-orange-300 pb-2 fade-in-element">All Juices</h3>
+            <ul class="space-y-3 text-lg">
+              <li class="flex items-center fade-in-element delay-100 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Tiger-nut Milk
+              </li>
+              <li class="flex items-center fade-in-element delay-100 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Zobo drink
+              </li>
+              <li class="flex items-center fade-in-element delay-200 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Orange Juice
+              </li>
+              <li class="flex items-center fade-in-element delay-200 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Orange Pineapple Juice
+              </li>
+              <li class="flex items-center fade-in-element delay-300 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Pineapple Watermelon juice
+              </li>
+              <li class="flex items-center fade-in-element delay-300 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Carrot Ginger turmeric Pineapple
+              </li>
+              <li class="flex items-center fade-in-element delay-400 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Pineapple cucumber celery spinach ginger
+              </li>
+              <li class="flex items-center fade-in-element delay-400 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Carrot beetroot watermelon pineapple yellow pepper
+              </li>
+              <li class="flex items-center fade-in-element delay-500 hover-grow">
+                <svg class="h-5 w-5 text-orange-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Soy Milk
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-2xl font-bold mb-6 text-orange-500 border-b-2 border-orange-300 pb-2 fade-in-element">Exotic Juices</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Improved juice card 1 -->
+              <div class="juice-card hover-grow hover-shadow fade-in-element delay-100">
+                <img src="./assets/carrot.jpeg" alt="Glow-up Juice" class="menu-image">
+                <div class="juice-card-content">
+                  <h4 class="text-xl font-bold text-white mb-2">Glow-up</h4>
+                  <p class="text-white">Carrot Ginger turmeric Pineapple</p>
+                </div>
+              </div>
+              
+              <!-- Improved juice card 2 -->
+              <div class="juice-card hover-grow hover-shadow fade-in-element delay-200">
+                <img src="./assets/lemon_juice.jpeg" alt="DetoxiGlow Juice" class="menu-image">
+                <div class="juice-card-content">
+                  <h4 class="text-xl font-bold text-white mb-2">DetoxiGlow</h4>
+                  <p class="text-white">Pineapple cucumber celery spinach ginger</p>
+                </div>
+              </div>
+              
+              <!-- Improved juice card 3 -->
+              <div class="juice-card hover-grow hover-shadow fade-in-element delay-300">
+                <img src="./assets/pineapple.jpeg" alt="RetinaGlow Juice" class="menu-image">
+                <div class="juice-card-content">
+                  <h4 class="text-xl font-bold text-white mb-2">RetinaGlow</h4>
+                  <p class="text-white">Carrot beetroot watermelon pineapple yellow pepper</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section with background image -->
+    <section id="products" class="py-16 relative overflow-hidden">
+      <div class="absolute inset-0 bg-image-section" style="background-image: url('./assets/family.jpg'); background-attachment: fixed; opacity: 0.1;"></div>
+      <div class="absolute inset-0 bg-yellow-50"></div>
+      <div class="container mx-auto px-5 relative z-10">
+        <h2 class="text-4xl text-center font-bold mb-12 text-orange-500 fade-in-element">Our Products</h2>
+        
+        <!-- Category Filters -->
+        <div class="flex justify-center mb-8 fade-in-element">
+          <div class="inline-flex rounded-md shadow-sm" role="group">
+            <button type="button" class="px-4 py-2 text-sm font-medium text-white bg-orange-500 border border-orange-600 rounded-l-lg hover:bg-orange-600 filter-btn active hover-bright" data-filter="all">
+              All Juices
+            </button>
+            <button type="button" class="px-4 py-2 text-sm font-medium text-white bg-orange-500 border-t border-b border-orange-600 hover:bg-orange-600 filter-btn hover-bright" data-filter="citrus">
+              Citrus Juices
+            </button>
+            <!-- <button type="button" class="px-4 py-2 text-sm font-medium text-white bg-orange-500 border border-orange-600 rounded-r-lg hover:bg-orange-600 filter-btn hover-bright" data-filter="exotic">
+              Exotic Juices
+            </button> -->
+          </div>
+        </div>
+        
+        <!-- Products Grid - Removed one row (last row) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Product: Tiger-nut Milk -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-lg product-card relative hover-grow hover-shadow fade-in-element delay-100" data-category="all">
+            <div class="h-64 bg-image-section hover-bright" style="background-image: url('./assets/tiger_nut.jpg')"></div>
+            <div class="p-6">
+              <span class="inline-block bg-yellow-500 text-white text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2">Plant-Based</span>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Tiger-nut Milk</h3>
+              <p class="text-gray-600 mb-4">Creamy, naturally sweet plant-based milk</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-orange-500">₦TBD</span>
+                <button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded hover-grow hover-bright">
+                  <a href="https://wa.me/2347045191276" target="_blank"><i class="fab fa-whatsapp"> Whatsapp</i></a>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product: Zobo Drink -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-lg product-card relative hover-grow hover-shadow fade-in-element delay-200" data-category="all">
+            <div class="h-64 bg-image-section hover-bright" style="background-image: url('./assets/zobo.jpeg')"></div>
+            <div class="p-6">
+              <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2">Herbal</span>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Zobo Drink</h3>
+              <p class="text-gray-600 mb-4">Traditional hibiscus drink with natural spices</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-orange-500">₦TBD</span>
+                <button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded hover-grow hover-bright">
+                  <a href="https://wa.me/2347045191276" target="_blank"><i class="fab fa-whatsapp"> Whatsapp</i></a>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product: Orange Juice -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-lg product-card relative hover-grow hover-shadow fade-in-element delay-300" data-category="citrus">
+            <div class="h-64 bg-image-section hover-bright" style="background-image: url('./assets/orange_juice.jpeg')"></div>
+            <div class="p-6">
+              <span class="inline-block bg-orange-500 text-white text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2">Citrus</span>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Orange Juice</h3>
+              <p class="text-gray-600 mb-4">Freshly squeezed sweet oranges</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-orange-500">₦TBD</span>
+                <button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded hover-grow hover-bright">
+                  <a href="https://wa.me/2347045191276" target="_blank"><i class="fab fa-whatsapp"> Whatsapp</i></a>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product: Orange Pineapple Juice -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-lg product-card relative hover-grow hover-shadow fade-in-element delay-100" data-category="citrus">
+            <div class="h-64 bg-image-section hover-bright" style="background-image: url('./assets/orange_pineapple.jpeg')"></div>
+            <div class="p-6">
+              <span class="inline-block bg-orange-500 text-white text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2">Citrus</span>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Orange Pineapple Juice</h3>
+              <p class="text-gray-600 mb-4">Sweet oranges blended with tropical pineapple</p> <br>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-orange-500">₦TBD</span>
+                <button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded hover-grow hover-bright">
+                  <a href="https://wa.me/2347045191276" target="_blank"><i class="fab fa-whatsapp"> Whatsapp</i></a>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product: Pineapple Watermelon Juice -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-lg product-card relative hover-grow hover-shadow fade-in-element delay-200" data-category="all">
+            <div class="h-64 bg-image-section hover-bright" style="background-image: url('./assets/watermelon.jpeg')"></div>
+            <div class="p-6">
+              <span class="inline-block bg-pink-500 text-white text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2">Hydrating</span>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Pineapple Watermelon Juice</h3>
+              <p class="text-gray-600 mb-4">Refreshing blend of sweet pineapple and juicy watermelon</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-orange-500">₦TBD</span>
+                <button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded hover-grow hover-bright">
+                  <a href="https://wa.me/2347045191276" target="_blank"><i class="fab fa-whatsapp"> Whatsapp</i></a>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product: Soy Milk -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-lg product-card relative hover-grow hover-shadow fade-in-element delay-300" data-category="all">
+            <div class="h-64 bg-image-section hover-bright" style="background-image: url('./assets/SoyaMilk.jpg')"></div>
+            <div class="p-6">
+              <span class="inline-block bg-yellow-500 text-white text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2">Plant-Based</span>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Soy Milk</h3>
+              <p class="text-gray-600 mb-4">Creamy plant-based milk alternative</p><br>
+              <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-orange-500">₦TBD</span>
+                <button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded hover-grow hover-bright">
+                  <a href="https://wa.me/2347045191276" target="_blank"><i class="fab fa-whatsapp"> Whatsapp</i></a>
+                </button>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section with background image -->
+    <section id="contact" class="py-16 relative">
+      <div class="absolute inset-0 bg-image-section" style="background-image: url('./assets/juices.jpg'); background-attachment: fixed;"></div>
+      <div class="absolute inset-0 bg-orange-100 bg-opacity-95"></div>
+      <div class="container mx-auto px-5 relative z-10">
+        <h2 class="text-4xl text-center font-bold mb-12 text-orange-500 fade-in-element">Contact Us</h2>
+        
+        <div class="flex flex-col md:flex-row gap-8">
+          <!-- Contact Information -->
+          <div class="md:w-1/2 bg-white p-8 rounded-lg shadow-md relative overflow-hidden hover-shadow fade-in-element delay-100">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-image-section rounded-bl-full" style="background-image: url('./assets/juices.jpg'); opacity: 0.2;"></div>
+            <h3 class="text-2xl font-bold mb-6 text-orange-500">Get In Touch</h3>
+            
+            <div class="space-y-4">
+              <div class="flex items-start hover-grow">
+                <svg class="h-6 w-6 text-orange-500 mr-3 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <div>
+                  <h4 class="font-semibold">Address</h4>
+                  <p>114 Rukpokwu, Port Harcourt</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start hover-grow">
+                <svg class="h-6 w-6 text-orange-500 mr-3 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                </svg>
+                <div>
+                  <h4 class="font-semibold">Phone</h4>
+                  <p>+23490100592</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start hover-grow">
+                <svg class="h-6 w-6 text-orange-500 mr-3 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <div>
+                  <h4 class="font-semibold">Email</h4>
+                  <p>Email us for inquiries</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8">
+              <h4 class="text-xl font-semibold mb-4">Business Hours</h4>
+              <ul class="space-y-2">
+                <li class="flex justify-between hover-grow">
+                  <span>Monday - Friday:</span>
+                  <span>9:00 AM - 6:00 PM</span>
+                </li>
+                <li class="flex justify-between hover-grow">
+                  <span>Saturday:</span>
+                  <span>10:00 AM - 4:00 PM</span>
+                </li>
+                <li class="flex justify-between hover-grow">
+                  <span>Sunday:</span>
+                  <span>Closed</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Contact Form -->
+          <div class="md:w-1/2 bg-white p-8 rounded-lg shadow-md relative overflow-hidden hover-shadow fade-in-element delay-200">
+            <div class="absolute bottom-0 left-0 w-40 h-40 bg-image-section rounded-tr-full" style="background-image: url('https://via.placeholder.com/200x200?text=Message'); opacity: 0.2;"></div>
+            <h3 class="text-2xl font-bold mb-6 text-orange-500">Send Us a Message</h3>
+            
+            <form>
+              <div class="mb-4">
+                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                <input type="text" id="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover-border" placeholder="Your Name">
+              </div>
+              
+              <div class="mb-4">
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover-border" placeholder="Your Email">
+              </div>
+              
+              <div class="mb-4">
+                <label for="subject" class="block text-gray-700 text-sm font-bold mb-2">Subject</label>
+                <input type="text" id="subject" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover-border" placeholder="Subject">
+              </div>
+              
+              <div class="mb-6">
+                <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+                <textarea id="message" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover-border" placeholder="Your Message"></textarea>
+              </div>
+              
+              <div class="flex items-center justify-between">
+                <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full hover-grow hover-bright" type="button">
+                  Send Message
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-orange-400 text-white py-8 relative overflow-hidden">
+    <div class="absolute inset-0 bg-image-section" style="background-image: url('https://via.placeholder.com/1920x300?text=Footer'); opacity: 0.1;"></div>
+    <div class="container mx-auto px-5 relative z-10">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <h2 class="text-2xl font-bold">Ngozi's Natursip</h2>
+          <p class="mt-2">Sip on the goodness of nature.</p>
+        </div>
+  
+        <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
+          <a href="#" class="hover:underline hover-grow">Home</a>
+          <a href="#about" class="hover:underline hover-grow">About</a>
+          <a href="#mission" class="hover:underline hover-grow">Mission</a>
+          <a href="#process" class="hover:underline hover-grow">Process</a>
+          <a href="#products" class="hover:underline hover-grow">Products</a>
+          <a href="#contact" class="hover:underline hover-grow">Contact</a>
+        </div>
+      </div>
+  
+      <!-- Social Media Links -->
+      <div class="flex justify-center gap-6 mt-6">
+        <a href="https://facebook.com" target="_blank" class="hover:text-gray-200 transition">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com" target="_blank" class="hover:text-gray-200 transition">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://instagram.com" target="_blank" class="hover:text-gray-200 transition">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://linkedin.com" target="_blank" class="hover:text-gray-200 transition">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="#" 
+        id="backToTopBtn"
+        class="hidden fixed bottom-6 right-6 bg-orange-500 text-white text-3xl p-5 rounded-full shadow-2xl hover:bg-orange-600 transition-all duration-300 animate-bounce z-50"
+        title="Back to top">
+       <i class="fas fa-arrow-up"></i>
+     </a>
+     
+      </div>
+  
+      <hr class="my-6 border-white/30">
+  
+      <div class="text-center">
+        <p>&copy; 2024 Ngozi's Natursip. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  
+
+  <!-- JavaScript for product filtering, scroll animations, and navbar behavior -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navbar scroll behavior
+      const navbar = document.querySelector('.navbar');
+      let lastScrollTop = 0;
+      
+      window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Hide navbar when scrolling down, show when scrolling up
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          // Scrolling down & past the threshold
+          navbar.classList.add('navbar-hidden');
+        } else {
+          // Scrolling up or at the top
+          navbar.classList.remove('navbar-hidden');
+        }
+        
+        lastScrollTop = scrollTop;
+      });
+      
+      // Product filtering
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const productCards = document.querySelectorAll('.product-card');
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all buttons
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          
+          // Add active class to clicked button
+          this.classList.add('active');
+          
+          const filter = this.getAttribute('data-filter');
+          
+          // Show/hide products based on filter
+          productCards.forEach(card => {
+            if (filter === 'all') {
+              card.style.display = 'block';
+            } else {
+              if (card.getAttribute('data-category') === filter) {
+                card.style.display = 'block';
+              } else {
+                card.style.display = 'none';
+              }
+            }
+          });
+        });
+      });
+      
+      // Scroll animation
+      const fadeElements = document.querySelectorAll('.fade-in-element');
+      
+      function checkFade() {
+        fadeElements.forEach(element => {
+          const elementTop = element.getBoundingClientRect().top;
+          const elementBottom = element.getBoundingClientRect().bottom;
+          
+          // Check if element is in viewport
+          if (elementTop < window.innerHeight - 100 && elementBottom > 0) {
+            element.classList.add('appear');
+          }
+        });
+      }
+      
+      // Initial check on page load
+      checkFade();
+      
+      // Check on scroll
+      window.addEventListener('scroll', checkFade);
+    });
+
+    const backToTopBtn = document.getElementById('backToTopBtn');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 300) {
+    backToTopBtn.classList.remove('hidden');
+  } else {
+    backToTopBtn.classList.add('hidden');
+  }
+});
+
+backToTopBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  // Smooth scroll to top over 600ms
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.addEventListener('click', function(e) {
+    const colors = ['#FFA500', '#FFB733', '#FFC966', '#FF7F00']; // orange-y colors
+
+    for (let i = 0; i < 8; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+      
+      // Set initial position at click
+      particle.style.left = e.clientX + 'px';
+      particle.style.top = e.clientY + 'px';
+
+      // Random direction and distance
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = 50 + Math.random() * 30;
+      const x = Math.cos(angle) * distance + 'px';
+      const y = Math.sin(angle) * distance + 'px';
+
+      particle.style.setProperty('--x', x);
+      particle.style.setProperty('--y', y);
+
+      document.body.appendChild(particle);
+
+      // Remove after animation ends
+      particle.addEventListener('animationend', () => {
+        particle.remove();
+      });
+    }
+  });
+ 
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuToggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+
+
+  </script>
+</body>
+</html>
